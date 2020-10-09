@@ -1,4 +1,4 @@
-## Glossary from [WebRTC Glossary](webrtcglossary.com)
+## Glossary from [WebRTC Glossary](https://www.webrtcglossary.com)
 
 ### API
 Application Programming Interface. 
@@ -13,7 +13,7 @@ AEC aims to cancel such echo and is very important for VoIP solutions. AEC is bu
 ### Bitrate
 Number of bits that can be sent or received per time unit. This can determine the quality of the media content. 
 
-Maximum bitrate may be capped by the bandwidth available. See [BWE](#bwe)
+Maximum bitrate may be capped by the bandwidth available. See [BWE](#bwe-bandwidth-estimation)
 
 ### BWE (Bandwidth Estimation)
 Mechanism used to decide how much bandwidth is available for a given session. 
@@ -25,14 +25,14 @@ Because the availability of bandwidth may  change throughout a call, estimating 
 ### Congestion
 Happens when the packets cant be sent to the next network fast enough, and get queued in the router's internet buffer. Leads to increased latency and jitter, and possibly packet drops. 
 
-> [BWE](#bwe) is used to prevent congestion, along with the limitation of bitrate. 
+> [BWE](#bwe-bandwidth-estimation) is used to prevent congestion, along with the limitation of bitrate. 
 
 ### CBR (Constant Bit Rate)
 Encoder generating same number of bits for a short period of time (<1 sec).
 
 Work well with known and limited network bandwidth. Common in live video sessions where latency must remain low. 
 
-> Larger stored recordings usually use [VBR](#vbr) 
+> Larger stored recordings usually use [VBR](#vbr-variable-bit-rate)
 
 ### Codec
 Piece of software that encodes and decodes a digital stream of media. 
@@ -66,7 +66,7 @@ Encoder generating different amount of bits per second based mainly on the conte
 
 Do not adhere to bandwidth constraints and may cause congestion and latency. Popular with screen sharing encoding with static content.  
 
-> Realtime media usually use [CBR](#cbr)
+> Realtime media usually use [CBR](#cbr-constant-bit-rate)
 
 ### RTP
 Real-time Transport Protocol. It is designed for sending and receiving real time media. 
