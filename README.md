@@ -2,4 +2,4 @@
 
 WebRTC Study Notes
 
-* [Glossary](#Glossary.md)
+* [Glossary](Glossary.md)
