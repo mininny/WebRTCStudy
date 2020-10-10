@@ -61,12 +61,58 @@ Channel that sends arbitrary data directly between peers.
 
 Data Channel uses [SCTP](#sctp) as its transport protocol. 
 
-### VBR (Variable Bit Rate)
-Encoder generating different amount of bits per second based mainly on the content. The content may affect the latency, therefore the network.  
+### ICE
+Interactive Connectivity Establishment.
 
-Do not adhere to bandwidth constraints and may cause congestion and latency. Popular with screen sharing encoding with static content.  
+ICE is used to do NAT traversal in WebRTC. It performs connectivity checks and use appropriate connection method to traverse NAT restrictions. 
 
-> Realtime media usually use [CBR](#cbr-constant-bit-rate)
+ICE collects all available candidates(local, reflexive, relayed) and perform connectivity check with the peer using all possible candidates. 
+
+While ICE allows peers to connect over different network conditions, it may take few seconds. To overcome this, WebRTC introduced [trickle ICE](#trickle-ICE)
+
+### ice-lite
+Minimal version of [ICE](#ICE) specification. Only have to answer incoming STUN binding requests and dact as a controlled entity in the ICE process. 
+
+Easy to implement, and popular among implementations of SFUs and other media servers. 
+
+### ICE-TCP
+ICE-TCP is a mechanism where media is sent over TCP instead of TURN.
+
+This removes the need to relay the media in the TURN server, and the direct connection delivers the media faster. It also removes the restriction of NAT or firewalls. 
+
+### Jitter
+Jitter is the variation in the time between data packets arriving, due to various network conditions such as congestion. 
+
+This makes the sequence of the media packets out of order, making the media weird.
+
+Because media are time-sensitive, the media packets are collected and reordered in order to match the original signal. This is handled by the [Jitter buffer](#jitter-buffer).
+
+### Jitter buffer
+Jitter buffer handles [packet reordering](#packet-reordering) and [jitter](#jitter). 
+
+Jitter buffer collects and stores incoming media packets, and decides when to pass them into the decoder or player based on:
+- the type of the packet
+- the packet that is waited for
+- time required to play the media
+
+### Lip Synchronization
+Synchronization of audio and video trakcs on the receiver end. 
+
+In WebRTC, the raw media timestamped, encoded, and sent over the network. During this process, the audio and video are handled separately to improve network efficiency. 
+
+When the media packets are received, they are sent to [jitter buffer](#jitter-buffer). The audio/video are then delayed as they are matched with the different media track with same timestamp.
+
+### Packet Reordering
+Packet Reordering is the process in which the packets are reordered to the way they were sent. 
+
+While WebRTC's transport protocol does not handle packet reordering, the [RTP](#rtp) contains mechanism for packet reordering. 
+
+### Trickle ICE
+Trickle ICE is optimization of ICE. 
+
+Instead of waiting for all possible ICE candidates (which may take several roundtrips), trickle ICE parallelizes the process. 
+
+Trickle ICE sends the ICE candidate as soon as they become available, reducing the whole process time. 
 
 ### RTP
 Real-time Transport Protocol. It is designed for sending and receiving real time media. 
@@ -112,6 +158,28 @@ SCTP is:
 
 > SCTP is used for [Data Channel](#data-channel) in WebRTC.
 
+### SDP
+Session Description Protocol. [RFC 4566](https://tools.ietf.org/html/rfc4566)
+
+SDP is used to negotiate WebRTC session's parameters. It contains information about the multimedia communication sesion. SDP should be handled by the application because WebRTC does not handle signaling. 
+
+SDP contains: 
+- rtpmap
+- BUNDLE
+- rtcp-mux
+- setup
+- fmtp
+- ssrc
+- [DTLS-SRTP](#dtls-srtp)
+- ICE
+
+### SDP Munging
+SDP Munging, or SDP mangling, is the process of modifying the SDP message before passing it to WebRTC. 
+
+You can mangle SDP of `answer` and `offer` before it is handed to `setLocalDescription` or `setRemoteDescription`.
+
+SDP munging is used to control and modify the behavior of WebRTC. 
+
 ### TCP
 Transmission Control Protocol. Low Level IP Protocol that is used to send reliable data stream.
 
@@ -143,3 +211,10 @@ UDP provides the following guarantees:
 - No Flow control mechanism. Congestion leads to packet loss. 
 
 > UDP is useful in scenarios where low latency is important. It is used in RTP and SRTP. 
+
+### VBR (Variable Bit Rate)
+Encoder generating different amount of bits per second based mainly on the content. The content may affect the latency, therefore the network.  
+
+Do not adhere to bandwidth constraints and may cause congestion and latency. Popular with screen sharing encoding with static content.  
+
+> Realtime media usually use [CBR](#cbr-constant-bit-rate)
