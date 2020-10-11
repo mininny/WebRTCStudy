@@ -61,6 +61,20 @@ Channel that sends arbitrary data directly between peers.
 
 Data Channel uses [SCTP](#sctp) as its transport protocol. 
 
+### Frame Rate
+Number of frames per second that are sent and received. 
+
+Typical video call aims for 30 frames per second, but may drop depending on the network condition, processing capabilities, and available bandwidth. 
+
+Frame rate fluctuates throughout time due to packet loss. 
+
+### FEC (Forward Error Correction)
+FEC is used to overcome packet loss in WebRTC.
+
+In FEC, media packets are duplicated and sent multiple times across the network. This ensures that the media stream will continue properly even if some packets are not received. 
+
+> FEC is included in WebRTC as part of Opus Codec. 
+
 ### ICE
 Interactive Connectivity Establishment.
 
@@ -95,6 +109,17 @@ Jitter buffer collects and stores incoming media packets, and decides when to pa
 - the packet that is waited for
 - time required to play the media
 
+### Latency
+Latency is the time for a process to complete. 
+
+Latency can be measured in many different areas, such as: 
+- time to encode/decode a media frame
+- time to send the packets through the network 
+- time for Jitter Buffer to process packets
+- etc
+
+Usually in WebRTC, it's the time between a peer sending a media packet and an opposite pear receiving the media packet. 
+
 ### Lip Synchronization
 Synchronization of audio and video trakcs on the receiver end. 
 
@@ -102,10 +127,65 @@ In WebRTC, the raw media timestamped, encoded, and sent over the network. During
 
 When the media packets are received, they are sent to [jitter buffer](#jitter-buffer). The audio/video are then delayed as they are matched with the different media track with same timestamp.
 
+### Media Engine
+Media Engine is part of software that handles the media processing. It handles:
+- integrating voice/video codecs
+- integrating peripherals and devices such as microphone, camera, speaker, and display
+- handling network problems like packet loss, packet reordering, and jitter
+- handling acoustic echo
+- optimizing media quality. i.e. noise reduction
+- implementing network transport protocol, such as RTP
+
+> WebRTC is a media engine with standardized Javascript API embedded into web browsers.
+
+### Mesh
+Mesh is multipoint architecture where every participant sends and receives media to/from all other participants. 
+
+> Mesh is usually scalable to 4-6 participants for video call at most. 
+
+Mesh is simple and require little backend infrastructure. However, it can not scale to large number of participants and requires a lot of bandwidth from all participants. 
+
+### Mixing
+Mixing is multipoint architecture where every participants sends/receives single media stream from a central server. This central server mixes all(or some) of the streams it receives. 
+
+> Mixing is done by a [MCU](#mcu-multipoint-conferencing-unit) server. 
+
+Mixing requires little power from the client side. However, it requires heavy workload for the server as it needs to decode, layout, and re-encode the media from many participants. 
+
+### MCU (Multipoint Conferencing Unit)
+MCU connects to multiple participants in a voice/video session, and implements mixing architecture. Due to this nature, they are expensive and require a lot of processing power per session. 
+
+### NACK (Negative Acknowledgement)
+NACK is error resiliency mechanism where a receiver sends a message indicating that it hasn't received a specific packet. 
+
+NACK is sent over [RTCP](#rtcp), and wil be decided if a retransmission of the lost packet is available and useful.
+
+### Packet Loss
+Packet loss occurs when sent packets of datas fail to reach their destination. This is part of network design. Its reasons are:
+- Corruption. Packet being corrupted and misdelivered.
+- Congestion. Load in network may delay or drop some packets. 
+
+Packet loss is dealt with three methods: 
+- [Concealment](#concealment)
+- [Retransmission](#rtx-retransmission)
+- [Forward Error Correction](#fec-forward-error-correction)
+
+### Packet Loss Concealment
+PLC is mechanism built to overcome packet loss problems in WebRTC.
+
+Using different sets of algorithms, PLC aims to fill the empty periods of media packets without affecting the quality of audio/video.
+
+PLC is not standardized and is left for the implementor of media engine and codec.
+
 ### Packet Reordering
 Packet Reordering is the process in which the packets are reordered to the way they were sent. 
 
 While WebRTC's transport protocol does not handle packet reordering, the [RTP](#rtp) contains mechanism for packet reordering. 
+
+### Transcoding
+Process of translating one codec to another. It requires decoding the data and re-encoding with another codec. 
+
+Transcoding may be necessary when different codec is required or has to be streamed to incompatible devices. 
 
 ### Trickle ICE
 Trickle ICE is optimization of ICE. 
@@ -113,6 +193,11 @@ Trickle ICE is optimization of ICE.
 Instead of waiting for all possible ICE candidates (which may take several roundtrips), trickle ICE parallelizes the process. 
 
 Trickle ICE sends the ICE candidate as soon as they become available, reducing the whole process time. 
+
+### RTX (Retransmission)
+Retransmission is used to resend packets that were not successfully delivered to the recipient. 
+
+While retransmission is usually useless for real-time media stream, there are some instances where it may be necessary. 
 
 ### RTP
 Real-time Transport Protocol. It is designed for sending and receiving real time media. 
