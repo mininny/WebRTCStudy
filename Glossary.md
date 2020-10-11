@@ -166,7 +166,7 @@ Packet loss occurs when sent packets of datas fail to reach their destination. T
 - Congestion. Load in network may delay or drop some packets. 
 
 Packet loss is dealt with three methods: 
-- [Concealment](#concealment)
+- [Concealment](#Packet-Loss-Concealment)
 - [Retransmission](#rtx-retransmission)
 - [Forward Error Correction](#fec-forward-error-correction)
 
